@@ -1,0 +1,95 @@
+#!/usr/bin/python
+# comper 'd,o,g,c,a,t' -n 3 -s , -o ,
+
+
+from optparse import OptionParser
+import itertools
+import os, sys
+
+
+
+# helper functions
+def unique(l):
+	# order preserving
+	seen = set()
+	result = list()
+	for element in l:
+		if element not in seen:
+			seen.add(element)
+			result.append(element)
+	return result
+
+
+
+# parse options
+usage = "usage: %prog [-n num -o out_sep -p -s sep -u] in_string"
+parser = OptionParser(usage=usage)
+
+parser.add_option("-n", "--number", action="store", type="int", dest="num", default=2, help="specify the number of elements in the combinations or permutations being computed [default: %default]")
+
+parser.add_option("-o", "--out_sep", action="store", type="string", dest="out_sep", default=None, help="specify output field separator [default: %default]")
+
+parser.add_option("-p", "--permutations", action="store_true", dest="perms", help="compute permutations instead of combinations")
+
+parser.add_option("-s", "--sep", action="store", type="string", dest="sep", default="", help="specify input field separator [default: %default]")
+
+parser.add_option("-u", "--unique", action="store_true", dest="unique", help="deduplicate lists of elements before computing their permutations/combinations")
+
+(options, args) = parser.parse_args()
+
+
+
+# read input
+in_strings = list()
+if not os.isatty(0):
+	if len(args) != 0:
+		parser.error("when reading from stdin no string can be passed to this program")
+
+	for line in sys.stdin.readlines():
+		in_strings.append(line.strip())
+
+else:
+	if len(args) != 1:
+		parser.error("when not reading from stdin one string must be passed to this program")
+
+	for line in args[0].split("\\n"):
+		in_strings.append(line.strip())
+
+
+
+
+# parse a list of elements from each line in input
+if options.sep != "":
+	for i in range(len(in_strings)):
+		in_strings[i] = [s.strip() for s in in_strings[i].split(options.sep)]
+
+		if options.unique:
+			in_strings[i] = unique(in_strings[i])
+
+
+
+# compute combinations or permutations of elements
+iterators = list()
+
+if options.perms:
+	for in_string in in_strings:
+		iterators.append(itertools.permutations(in_string, options.num))
+else:
+	for in_string in in_strings:
+		iterators.append(itertools.combinations(in_string, options.num))
+
+
+
+# print combinations or permutations
+for i in range(len(iterators)):
+	print(in_strings[i])
+
+	for combo in iterators[i]:
+		if options.out_sep is None:
+			print(combo)
+		else:
+			print(options.out_sep.join(combo))
+
+	print
+
+
