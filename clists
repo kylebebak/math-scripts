@@ -2,113 +2,92 @@
 # clists '234,23  , 12, 45  , 61' '234, 23,12, 45, 83'
 # clists -s '|' '234|23  | 12| 45  | 61' '234| 23|12| 45| 83'
 # clists '1,2,3' '1,3,4' '3,4,5'
-
 from optparse import OptionParser
 import itertools, sys
 
 
-
 # helper functions
 def intersect(lists):
-	ll = set(lists[0])
-	for l in lists[1:]:
-		ll = ll & set(l)
+    ll = set(lists[0])
+    for l in lists[1:]:
+        ll = ll & set(l)
 
-	return list(ll)
+    return list(ll)
 
 
 def difference(lists):
-	ll = set(lists[0])
-	for l in lists[1:]:
-		ll = ll - set(l)
+    ll = set(lists[0])
+    for l in lists[1:]:
+        ll = ll - set(l)
 
-	return list(ll)
+    return list(ll)
+
 
 def sym_difference(lists):
-	ll = set(lists[0])
-	for l in lists[1:]:
-		ll = ll.symmetric_difference(set(l))
+    ll = set(lists[0])
+    for l in lists[1:]:
+        ll = ll.symmetric_difference(set(l))
 
-	return list(ll)
-
-
-
-
-
+    return list(ll)
 
 
 # parse options
-usage = "usage: %prog [-c -d -i -f -s sep] [list_1 ... list_N]\n\nNOTE: the default mode for this program accepts strings in which fields to be compared are separated by commas. trailing and leading whitespace for list elements is ignored"
+usage = 'usage: %prog [-c -d -i -f -s sep] [list_1 ... list_N]\n\nNOTE: the default mode for this program accepts strings in which fields to be compared are separated by commas. trailing and leading whitespace for list elements is ignored'
 parser = OptionParser(usage=usage)
 
-parser.add_option("-c", "--cartesian", action="store_true", dest="cart", help="get cartesian product of lists")
-parser.add_option("-d", "--difference", action="store_true", dest="diff", help="get differences of lists")
-parser.add_option("-i", "--intersection", action="store_true", dest="int", help="get insersection of lists")
+parser.add_option('-c', '--cartesian', action='store_true', dest='cart', help='get cartesian product of lists')
+parser.add_option('-d', '--difference', action='store_true', dest='diff', help='get differences of lists')
+parser.add_option('-i', '--intersection', action='store_true', dest='int', help='get insersection of lists')
 
-parser.add_option("-f", "--files", action="store_true", dest="files", help="read lists from files instead of strings. each field must be placed on its own line. the field separator is ignored if this option is passed")
+parser.add_option('-f', '--files', action='store_true', dest='files', help='read lists from files instead of strings. each field must be placed on its own line. the field separator is ignored if this option is passed')
 
-parser.add_option("-s", "--sep", action="store", type="string", dest="sep", default=",", help="specify the field separator [default: %default]")
+parser.add_option('-s', '--sep', action='store', type='string', dest='sep', default=',', help='specify the field separator [default: %default]')
 
-parser.add_option("-o", "--outsep", action="store", type="string", dest="outsep", default=",", help="specify the output field separator [default: %default]")
+parser.add_option('-o', '--outsep', action='store', type='string', dest='outsep', default=',', help='specify the output field separator [default: %default]')
 
 (options, args) = parser.parse_args()
 
-
-
-
-
 if len(args) < 2:
-	parser.error("at least two strings or files must be passed to this program")
+    parser.error('at least two strings or files must be passed to this program')
 
 # default behavior is to display only intersections
 if (not options.int and not options.diff and not options.cart):
-	options.int = True
-
+    options.int = True
 
 # populate this with input lists, either from positional args or from files
 lists = list()
 
 # read strings from args and create lists
 if options.files:
-	try:
-		for arg in args:
-			lists.append([line.strip() for line in open(arg)])
-	except:
-		parser.error("the specified file(s) could not be opened")
+    try:
+        for arg in args:
+            lists.append([line.strip() for line in open(arg)])
+    except:
+        parser.error('the specified file(s) could not be opened')
 else:
-	for arg in args:
-		lists.append([s.strip() for s in arg.split(options.sep)])
+    for arg in args:
+        lists.append([s.strip() for s in arg.split(options.sep)])
 
-
-
-
-
-
-''' print results to stdout
-__________________________________________________ '''
-
+# print results to stdout
 # intersection
 if options.int:
-	print((options.outsep).join(intersect(lists)))
-
+    print((options.outsep).join(intersect(lists)))
 
 # difference
 if options.diff:
-	print
-	print("in the first list but none of the others")
-	print((options.outsep).join(difference(lists)))
+    print
+    print('in the first list but none of the others')
+    print((options.outsep).join(difference(lists)))
 
-	print
-	print("in the last list but none of the others")
-	print((options.outsep).join(difference(lists[::-1])))
+    print
+    print('in the last list but none of the others')
+    print((options.outsep).join(difference(lists[::-1])))
 
-	print
-	print("symmetric difference of these lists")
-	print((options.outsep).join(sym_difference(lists)))
-
+    print
+    print('symmetric difference of these lists')
+    print((options.outsep).join(sym_difference(lists)))
 
 # cartesian product
 if options.cart:
-	for i in itertools.product(*lists):
-		print((options.outsep).join(i))
-
+    for i in itertools.product(*lists):
+        print((options.outsep).join(i))
