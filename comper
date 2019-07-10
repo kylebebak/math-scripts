@@ -2,7 +2,8 @@
 # comper 'd,o,g,c,a,t' -n 3 -s , -o ,
 from optparse import OptionParser
 import itertools
-import os, sys
+import os
+import sys
 
 
 # helper functions
