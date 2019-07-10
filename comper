@@ -22,15 +22,51 @@ def unique(l):
 usage = "usage: %prog [-n num -o out_sep -p -s sep -u] in_string"
 parser = OptionParser(usage=usage)
 
-parser.add_option("-n", "--number", action="store", type="int", dest="num", default=2, help="specify the number of elements in the combinations or permutations being computed [default: %default]")
+parser.add_option(
+    "-n",
+    "--number",
+    action="store",
+    type="int",
+    dest="num",
+    default=2,
+    help="specify the number of elements in the combinations or permutations being computed [default: %default]",
+)
 
-parser.add_option("-o", "--out_sep", action="store", type="string", dest="out_sep", default=None, help="specify output field separator [default: %default]")
+parser.add_option(
+    "-o",
+    "--out_sep",
+    action="store",
+    type="string",
+    dest="out_sep",
+    default=None,
+    help="specify output field separator [default: %default]",
+)
 
-parser.add_option("-p", "--permutations", action="store_true", dest="perms", help="compute permutations instead of combinations")
+parser.add_option(
+    "-p",
+    "--permutations",
+    action="store_true",
+    dest="perms",
+    help="compute permutations instead of combinations",
+)
 
-parser.add_option("-s", "--sep", action="store", type="string", dest="sep", default="", help="specify input field separator [default: %default]")
+parser.add_option(
+    "-s",
+    "--sep",
+    action="store",
+    type="string",
+    dest="sep",
+    default="",
+    help="specify input field separator [default: %default]",
+)
 
-parser.add_option("-u", "--unique", action="store_true", dest="unique", help="deduplicate lists of elements before computing their permutations/combinations")
+parser.add_option(
+    "-u",
+    "--unique",
+    action="store_true",
+    dest="unique",
+    help="deduplicate lists of elements before computing their permutations/combinations",
+)
 
 (options, args) = parser.parse_args()
 
@@ -45,7 +81,9 @@ if not os.isatty(0):
 
 else:
     if len(args) != 1:
-        parser.error("when not reading from stdin one string must be passed to this program")
+        parser.error(
+            "when not reading from stdin one string must be passed to this program"
+        )
 
     for line in args[0].split("\\n"):
         in_strings.append(line.strip())

@@ -11,16 +11,30 @@ def xor_strings(xs, ys):
 
 
 def xor_hex_strings(xs, ys):
-    return "".join(chr(ord(x) ^ ord(y)) for x, y in zip(xs.decode("hex"), ys.decode("hex"))).encode("hex")
+    return "".join(
+        chr(ord(x) ^ ord(y)) for x, y in zip(xs.decode("hex"), ys.decode("hex"))
+    ).encode("hex")
 
 
 # parse options
 usage = "usage: %prog [-b -p] string_a string_b\nNOTE: by default this program processes hexadecimal strings"
 parser = OptionParser(usage=usage)
 
-parser.add_option("-b", "--binary", action="store_true", dest="binary", help="process binary strings instead of hexadecimal strings")
+parser.add_option(
+    "-b",
+    "--binary",
+    action="store_true",
+    dest="binary",
+    help="process binary strings instead of hexadecimal strings",
+)
 
-parser.add_option("-p", "--pad", action="store_true", dest="pad", help="pad strings with trailing zeros to so that all input strings have the same length")
+parser.add_option(
+    "-p",
+    "--pad",
+    action="store_true",
+    dest="pad",
+    help="pad strings with trailing zeros to so that all input strings have the same length",
+)
 
 (options, args) = parser.parse_args()
 
@@ -43,10 +57,10 @@ if options.pad:
     for i in range(len(args)):
         if options.binary:
             if maxlen != len(args[i]):
-                args[i] = args[i] + struct.pack(str(maxlen - len(args[i])) + 's', '')
+                args[i] = args[i] + struct.pack(str(maxlen - len(args[i])) + "s", "")
         else:
             if maxlen != len(args[i]):
-                args[i] = args[i] + ''.zfill(maxlen - len(args[i]))
+                args[i] = args[i] + "".zfill(maxlen - len(args[i]))
 
 # read strings from args and xor them
 if options.binary:
